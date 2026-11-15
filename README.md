@@ -9,7 +9,7 @@ A high-density, zero-bloat Hacker News clone built with the Next.js App Router, 
 - **Framework:** Next.js (App Router, Server Components, Server Actions)
 - **Language:** TypeScript
 - **Styling:** Tailwind CSS + Vercel Geist Design System (`geist` font package)
-- **Database & ORM:** Prisma ORM with SQLite (locally) / easily switchable to PostgreSQL
+- **Database & ORM:** Prisma ORM with SQLite (local development) / Cloudflare D1 via `@prisma/adapter-d1` (Cloudflare Pages Functions) / PostgreSQL
 - **Authentication:** Custom zero-bloat session auth via HTTP-only signed JWT cookies (`jose` + `bcryptjs`)
 - **Offline / PWA:** Service Worker (Cache-First static assets, Stale-While-Revalidate pages) with offline status indicator
 
@@ -83,6 +83,46 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+---
+
+## Cloudflare Pages & D1 Database Setup
+
+ByteNews integrates directly with **Cloudflare D1** via `@prisma/adapter-d1` inside **Cloudflare Pages Functions** with zero auxiliary worker services.
+
+### 1. Create D1 Database (Cloudflare CLI or Dashboard)
+
+```bash
+npx wrangler d1 create bytenews-db
+```
+
+Update `wrangler.toml` with the generated `database_id`:
+
+```toml
+[[d1_databases]]
+binding = "DB"
+database_name = "bytenews-db"
+database_id = "<YOUR_D1_DATABASE_ID>"
+```
+
+### 2. Execute Schema on D1
+
+Execute the SQL schema directly on your Cloudflare D1 database:
+
+```bash
+# For remote production D1
+npm run d1:apply:remote
+
+# Or for local preview
+npm run d1:apply:local
+```
+
+### 3. Cloudflare Pages Function Binding
+
+In your Cloudflare Pages project settings:
+1. Navigate to **Settings** > **Functions** > **D1 database bindings**.
+2. Add a binding named `DB` linked to your `bytenews-db`.
+3. Set the build command to `npm run pages:build` (or `npx @cloudflare/next-on-pages`) and output directory to `.vercel/output/static`.
 
 ---
 

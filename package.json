@@ -9,12 +9,17 @@
     "lint": "next lint",
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "d1:apply:local": "wrangler d1 execute bytenews-db --local --file=./prisma/schema.sql",
+    "d1:apply:remote": "wrangler d1 execute bytenews-db --remote --file=./prisma/schema.sql",
+    "pages:build": "next-on-pages",
+    "pages:preview": "wrangler pages dev .vercel/output/static --d1=DB=bytenews-db"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
+    "@prisma/adapter-d1": "^5.22.0",
     "@prisma/client": "^5.22.0",
     "bcryptjs": "^2.4.3",
     "geist": "^1.3.1",
@@ -25,6 +30,7 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@cloudflare/next-on-pages": "^1.13.16",
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20.17.6",
     "@types/react": "^18.3.12",
@@ -34,6 +40,7 @@
     "prisma": "^5.22.0",
     "tailwindcss": "^3.4.15",
     "tsx": "^4.19.2",
-    "typescript": "^5.6.3"
+    "typescript": "^5.6.3",
+    "wrangler": "^4.162.0"
   }
 }
