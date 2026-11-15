@@ -1,0 +1,16 @@
+{
+  "name": "ByteNews",
+  "short_name": "ByteNews",
+  "description": "A high-contrast, ultra-fast Hacker News clone built with Next.js and Vercel Geist design system",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#FF6600",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String    @id @default(cuid())
+  username     String    @unique
+  passwordHash String
+  karma        Int       @default(1)
+  about        String?   @default("")
+  createdAt    DateTime  @default(now())
+  posts        Post[]
+  comments     Comment[]
+  votes        Vote[]
+}
+
+model Post {
+  id        String    @id @default(cuid())
+  title     String
+  url       String?
+  text      String?
+  type      String    @default("LINK") // LINK, ASK, SHOW, JOB
+  points    Int       @default(1)
+  authorId  String
+  author    User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+  comments  Comment[]
+  votes     Vote[]
+
+  @@index([createdAt])
+  @@index([points])
+  @@index([type])
+}
+
+model Comment {
+  id        String    @id @default(cuid())
+  content   String
+  postId    String
+  post      Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  authorId  String
+  author    User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  parentId  String?
+  parent    Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies   Comment[] @relation("CommentReplies")
+  points    Int       @default(1)
+  createdAt DateTime  @default(now())
+  votes     Vote[]
+
+  @@index([postId])
+  @@index([parentId])
+  @@index([createdAt])
+}
+
+model Vote {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  postId    String?
+  post      Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  commentId String?
+  comment   Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, postId])
+  @@unique([userId, commentId])
+  @@index([userId])
+  @@index([postId])
+  @@index([commentId])
+}
