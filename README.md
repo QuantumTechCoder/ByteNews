@@ -1,32 +1,83 @@
+<div align="center">
+
 # ByteNews
 
-A high-density, zero-bloat Hacker News clone built with the Next.js App Router, TypeScript, Tailwind CSS, Vercel's Geist design system, and Prisma ORM.
+<p align="center">
+  <strong>A high-density, zero-bloat Hacker News clone built with Next.js App Router, Vercel Geist design system, Cloudflare Pages & D1, and Prisma ORM.</strong>
+</p>
+
+<p align="center">
+  <a href="https://github.com/QuantumTechCoder/ByteNews/stargazers"><img src="https://img.shields.io/github/stars/QuantumTechCoder/ByteNews?style=flat-square&color=FF6600" alt="GitHub Stars" /></a>
+  <a href="https://github.com/QuantumTechCoder/ByteNews/network/members"><img src="https://img.shields.io/github/forks/QuantumTechCoder/ByteNews?style=flat-square&color=EDEDED" alt="GitHub Forks" /></a>
+  <a href="https://github.com/QuantumTechCoder/ByteNews/issues"><img src="https://img.shields.io/github/issues/QuantumTechCoder/ByteNews?style=flat-square&color=FF6600" alt="Issues" /></a>
+  <a href="https://github.com/QuantumTechCoder/ByteNews/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="License" /></a>
+  <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square" alt="PRs Welcome" />
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Next.js_14-App_Router-000000?style=flat-square&logo=next.js&logoColor=white" alt="Next.js" />
+  <img src="https://img.shields.io/badge/TypeScript-5.6-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white" alt="Tailwind" />
+  <img src="https://img.shields.io/badge/Cloudflare-Pages_%26_D1-F38020?style=flat-square&logo=cloudflare&logoColor=white" alt="Cloudflare" />
+  <img src="https://img.shields.io/badge/Prisma-5.22-2D3748?style=flat-square&logo=prisma&logoColor=white" alt="Prisma" />
+</p>
+
+</div>
 
 ---
 
-## Tech Stack
+## Architecture Overview
 
-- **Framework:** Next.js (App Router, Server Components, Server Actions)
-- **Language:** TypeScript
-- **Styling:** Tailwind CSS + Vercel Geist Design System (`geist` font package)
-- **Database & ORM:** Prisma ORM with SQLite (local development) / Cloudflare D1 via `@prisma/adapter-d1` (Cloudflare Pages Functions) / PostgreSQL
-- **Authentication:** Custom zero-bloat session auth via HTTP-only signed JWT cookies (`jose` + `bcryptjs`)
-- **Offline / PWA:** Service Worker (Cache-First static assets, Stale-While-Revalidate pages) with offline status indicator
+```
+                        ┌─────────────────────────────────────┐
+                        │      Client Browser / Mobile PWA    │
+                        │    (Service Worker Cache / SWR)     │
+                        └──────────────────┬──────────────────┘
+                                           │
+                                           │ HTTP / Server Actions
+                                           ▼
+                        ┌─────────────────────────────────────┐
+                        │     Cloudflare Pages Functions      │
+                        │      Next.js App Router (RSC)       │
+                        ├──────────────────┬──────────────────┤
+                        │  Server Actions  │ Server Component │
+                        │  (Optimistic UI) │   Data Fetching  │
+                        └─────────┬────────┴─────────┬────────┘
+                                  │                  │
+                         @prisma/adapter-d1          │
+                                  │                  │
+                                  ▼                  ▼
+                        ┌─────────────────────────────────────┐
+                        │        Cloudflare D1 (SQLite)       │
+                        │   (Users, Posts, Comments, Votes)   │
+                        └─────────────────────────────────────┘
+```
 
 ---
 
-## Core Features
+## Key Highlights
 
-- **Geist Design Aesthetic:** High-contrast monochrome palette (`#000000` dark, `#FFFFFF` light) with class-based theme switcher, 1px hairline borders (`border-neutral-200 dark:border-neutral-800`), dense typography, and `#FF6600` accent highlights.
-- **Hacker News Gravity Ranking:** Score calculation implementing the classic formula:
+- **Vercel Geist Aesthetic:** High-contrast monochrome palette (`#000000` background, `#0A0A0A` elevated surfaces, `#EDEDED` text) with class-based theme switcher, 1px hairline borders (`border-neutral-200 dark:border-neutral-800`), zero box shadows, zero card bloat, and dense typography.
+- **Hacker News Gravity Ranking:** Score calculation implementing the classic gravity decay algorithm:
   $$\text{Score} = \frac{\text{Points} - 1}{(\text{AgeInHours} + 2)^{1.8}}$$
-- **Optimistic UI:** Instant upvote and unvote toggles using React's `useOptimistic` hook paired with Next.js Server Actions.
-- **Feeds:** Top stories (`/`), newest submissions (`/newest`), Ask BN (`/ask`), Show BN (`/show`), and Jobs (`/jobs`).
-- **Discussion Threads:** Collapsible, infinitely nested comment trees with vertical indentation guide lines, collapsed reply counters, and inline reply forms.
-- **Submission Flow:** Supports external URLs or Ask/Show text posts with duplicate URL detection.
-- **User Profiles:** Karma tracking, account creation date, bio editor, and submission/comment history.
-- **Instant Search:** Full-text filtering across post titles, links, and comments.
-- **REST API:** Endpoints at `/api/feed` and `/api/item/[id]` for programmatic queries.
+- **Optimistic UI:** Instant upvote and unvote toggles using React's `useOptimistic` hook paired with Next.js Server Actions for 0ms perceived latency.
+- **Native Cloudflare D1 Integration:** Uses `@prisma/adapter-d1` inside Cloudflare Pages Functions with zero auxiliary worker services.
+- **Feeds & Discovery:** Top stories (`/`), newest submissions (`/newest`), Ask BN (`/ask`), Show BN (`/show`), and Jobs (`/jobs`).
+- **Discussion Threads:** Collapsible, infinitely nested comment trees with vertical indentation guide lines, collapsed reply counters `[+ X collapsed]`, and inline reply forms.
+- **Offline / Low-Bandwidth Resilience:** Service Worker (`public/sw.js`) implementing Cache-First static assets and Stale-While-Revalidate HTML routes, coupled with an in-header offline badge.
+- **First Load JS:** Compact client footprint (~87 kB first-load JS) powered by Server Components.
+
+---
+
+## Design System & Typography
+
+| Element | Specification | Purpose |
+| :--- | :--- | :--- |
+| **Brand Badge** | `[B]` (`#FF6600` background, `#000000` text) | Crisp square brand mark |
+| **Accent Color** | `#FF6600` (Hacker News Orange) | Reserved for active tabs, upvote triangles, submit buttons |
+| **Headings & Body** | `GeistSans` | Clean, readable text rendering for long-form discussions |
+| **Metadata & Numbers** | `GeistMono` (`tabular-nums`) | Ranks, point tallies, comment counts, timestamps, karma scores |
+| **Dividers** | `1px solid` (`border-neutral-200` / `border-neutral-800`) | Clean separation without container bloat |
 
 ---
 
@@ -90,7 +141,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ByteNews integrates directly with **Cloudflare D1** via `@prisma/adapter-d1` inside **Cloudflare Pages Functions** with zero auxiliary worker services.
 
-### 1. Create D1 Database (Cloudflare CLI or Dashboard)
+### 1. Create D1 Database
 
 ```bash
 npx wrangler d1 create bytenews-db
@@ -151,6 +202,7 @@ ByteNews defaults to SQLite for local development without external dependencies.
 ByteNews/
 ├── prisma/
 │   ├── schema.prisma              # Data models (User, Post, Comment, Vote)
+│   ├── schema.sql                 # D1 SQL migration script
 │   └── seed.ts                    # Realistic seed dataset
 ├── public/
 │   ├── icon.svg                   # Brand mark
@@ -172,11 +224,24 @@ ByteNews/
 │   ├── lib/                       # Actions, Prisma singleton, ranking algorithms, auth
 │   └── types/                     # Shared TypeScript interfaces
 ├── tailwind.config.ts
+├── wrangler.toml                  # Cloudflare Pages & D1 configuration
 └── tsconfig.json
 ```
 
 ---
 
+## Contributing
+
+Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/QuantumTechCoder/ByteNews/issues).
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'feat: add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+---
+
 ## License
 
-MIT
+Distributed under the MIT License. See [LICENSE](LICENSE) for more information.
