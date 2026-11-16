@@ -2,3 +2,9 @@ name = "bytenews"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
 pages_build_output_dir = ".vercel/output/static"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "bytenews-db"
+database_id = "de301e65-e777-44c4-b31c-48ee094d35a5"
+
