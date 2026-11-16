@@ -83,7 +83,7 @@
 
 - **Vercel Geist Aesthetic:** High-contrast monochrome palette (`#000000` background, `#0A0A0A` elevated surfaces, `#EDEDED` text) with class-based theme switcher, 1px hairline borders (`border-neutral-800`), zero box shadows, zero card bloat, and dense typography.
 - **Hacker News Gravity Ranking:** Score calculation implementing the classic gravity decay algorithm:
-  $$\text{Score} = \frac{\text{Points} - 1}{(\text{AgeInHours} + 2)^{1.8}}$$
+  `Score = (Points - 1) / (AgeInHours + 2)^1.8`
 - **Optimistic UI:** Instant upvote and unvote toggles using React's `useOptimistic` hook paired with Next.js Server Actions for 0ms perceived latency.
 - **Native Cloudflare D1 Integration:** Direct edge bindings via `@prisma/adapter-d1` inside Cloudflare Pages Functions with zero auxiliary worker services.
 - **Feeds & Discovery:** Top stories (`/`), newest submissions (`/newest`), Ask BN (`/ask`), Show BN (`/show`), and Jobs (`/jobs`).
