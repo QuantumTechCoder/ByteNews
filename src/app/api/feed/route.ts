@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { getFeedPosts } from "@/lib/posts";
 
+export const runtime = "edge";
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const sort = searchParams.get("sort") === "newest" ? "newest" : "ranked";

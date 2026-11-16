@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import bcrypt from "bcryptjs";
+import { hash } from "bcrypt-ts";
 
 const prisma = new PrismaClient();
 
@@ -12,7 +12,7 @@ async function main() {
   await prisma.post.deleteMany();
   await prisma.user.deleteMany();
 
-  const defaultPasswordHash = await bcrypt.hash("password123", 10);
+  const defaultPasswordHash = await hash("password123", 10);
 
   // 1. Seed Users
   const users = await Promise.all([

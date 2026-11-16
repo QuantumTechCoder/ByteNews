@@ -6,6 +6,8 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { getCurrentUser } from "@/lib/auth";
 
+export const runtime = "edge";
+
 export const metadata: Metadata = {
   title: "ByteNews - Developer News & Discussions",
   description:

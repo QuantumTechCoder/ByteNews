@@ -7,6 +7,7 @@ import { CommentTree } from "@/components/CommentTree";
 import type { PostWithAuthorAndCounts, CommentWithDetails } from "@/types";
 
 export const dynamic = "force-dynamic";
+export const runtime = "edge";
 
 export default async function ItemPage({
   params,

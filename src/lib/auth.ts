@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { SignJWT, jwtVerify } from "jose";
-import bcrypt from "bcryptjs";
+import { hash, compare, genSalt } from "bcrypt-ts";
 import { prisma } from "./prisma";
 import type { SessionPayload, SafeUser } from "@/types";
 
@@ -10,12 +10,12 @@ const SECRET_KEY = new TextEncoder().encode(
 );
 
 export async function hashPassword(password: string): Promise<string> {
-  const salt = await bcrypt.genSalt(10);
-  return bcrypt.hash(password, salt);
+  const salt = await genSalt(10);
+  return hash(password, salt);
 }
 
-export async function verifyPassword(password: string, hash: string): Promise<boolean> {
-  return bcrypt.compare(password, hash);
+export async function verifyPassword(password: string, hashStr: string): Promise<boolean> {
+  return compare(password, hashStr);
 }
 
 export async function createSessionToken(payload: SessionPayload): Promise<string> {

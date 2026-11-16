@@ -2,6 +2,7 @@ import { getFeedPosts } from "@/lib/posts";
 import { PostFeed } from "@/components/PostFeed";
 
 export const dynamic = "force-dynamic";
+export const runtime = "edge";
 
 export default async function NewestPage({
   searchParams,

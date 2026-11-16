@@ -6,6 +6,7 @@ import { formatTimeAgo } from "@/lib/ranking";
 import type { PostWithAuthorAndCounts } from "@/types";
 
 export const dynamic = "force-dynamic";
+export const runtime = "edge";
 
 export default async function SearchPage({
   searchParams,
