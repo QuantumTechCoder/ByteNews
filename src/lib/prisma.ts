@@ -11,23 +11,21 @@ function resolveD1Database(): any {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const g = globalThis as any;
 
-  // 1. Direct Cloudflare runtime global binding (D1 binding "DB")
-  if (g.DB && typeof g.DB.prepare === "function") {
-    return g.DB;
-  }
+  // Check candidate binding names (standard "DB" or custom project names)
+  const candidateNames = ["DB", "bytenews-db", "bytenews_db", "bytenewsDb"];
 
-  // 2. Cloudflare env wrapper or Next.js environment mapping
-  if (g.__env__?.DB && typeof g.__env__.DB.prepare === "function") {
-    return g.__env__.DB;
-  }
-
-  // 3. Process environment (when injected via Next.js Cloudflare adapter)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  if (typeof process !== "undefined" && (process.env as any)?.DB) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const envDb = (process.env as any).DB;
-    if (typeof envDb.prepare === "function") {
-      return envDb;
+  for (const name of candidateNames) {
+    if (g[name] && typeof g[name].prepare === "function") {
+      return g[name];
+    }
+    if (g.__env__?.[name] && typeof g.__env__[name].prepare === "function") {
+      return g.__env__[name];
+    }
+    if (typeof process !== "undefined" && (process.env as any)?.[name]) {
+      const envDb = (process.env as any)[name];
+      if (typeof envDb.prepare === "function") {
+        return envDb;
+      }
     }
   }
 
