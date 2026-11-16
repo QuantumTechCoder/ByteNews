@@ -17,17 +17,22 @@ export default async function ItemPage({
   const currentUser = await getCurrentUser();
   const currentUserId = currentUser ? currentUser.id : null;
 
-  const post = await prisma.post.findUnique({
-    where: { id: params.id },
-    include: {
-      author: {
-        select: { id: true, username: true, karma: true },
+  let post = null;
+  try {
+    post = await prisma.post.findUnique({
+      where: { id: params.id },
+      include: {
+        author: {
+          select: { id: true, username: true, karma: true },
+        },
+        _count: {
+          select: { comments: true },
+        },
       },
-      _count: {
-        select: { comments: true },
-      },
-    },
-  });
+    });
+  } catch (err) {
+    console.error("[ByteNews] Error fetching post:", err);
+  }
 
   if (!post) {
     notFound();
